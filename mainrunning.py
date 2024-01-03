@@ -38,7 +38,7 @@ class Run:
         '''
         This function returns starting  and ending point of paddle
         '''
-        half_size = int((PADDLE_SIZE[self.paddle_array[2]])/2)
+        half_size = int((PADDLE_SIZE[self.paddle_array[2]])/2)   # PADDLE_SIZE - stores sizes of different paddle
         paddle_start = self.paddle_array[0] - half_size-1
         paddle_end = self.paddle_array[0] + half_size+1
         return (half_size,paddle_start,paddle_end)
@@ -47,14 +47,14 @@ class Run:
         '''
         This function is responsible for detecting user input and responding accordingly
         '''
-        key = input_to()
+        key = input_to()    # for key input
         (half_size,paddle_start,paddle_end) = self.return_paddle_start_and_end()
         print(CLEAR_SCREEN)
-        if(key == 'q'):
+        if(key == 'q'):     # Game quit
             os.system('clear')
             print(art.you_quit_art)
             return 0
-        elif(key == 'a'):
+        elif(key == 'a'):   # paddle moving left
             if(paddle_start > 4):
                 self.paddle_array[0] -= 3
                 if(self.level == 3):
@@ -62,7 +62,7 @@ class Run:
                 if(self.sticky_ball_motion):
                     self.ball_class[0].ball_sticky_motion(self.screen_array,0,-3)
                 self.Paddle.update_paddle_value(self.paddle_array[0],self.paddle_array[1],self.paddle_array[2])
-        elif(key == 'd'):
+        elif(key == 'd'):   # paddle moving right
             if(paddle_end < WIDTH-3):
                 self.paddle_array[0] += 3
                 if(self.level == 3):
@@ -70,9 +70,9 @@ class Run:
                 if(self.sticky_ball_motion):
                     self.ball_class[0].ball_sticky_motion(self.screen_array,0,+3)
                 self.Paddle.update_paddle_value(self.paddle_array[0],self.paddle_array[1],self.paddle_array[2])
-        elif(key == 'k'):
+        elif(key == 'k'):   # realeasing the ball
             self.sticky_ball_motion = False
-        elif(key == 'f' ):
+        elif(key == 'f' ):  # move to next level
             if( self.level < 3):
                 self.skipkey = True
             else:
@@ -113,13 +113,20 @@ class Run:
         powerups = []
         self.puinit(powerups)
         self.starting_instruction()
+
+        # Creating Board
         screen_board = screen(HEIGHT,WIDTH)
         screen_board.create_scenery()
         self.screen_array = screen_board.return_screenarray()
+
+        # Creating Paddle
         self.paddle_array = np.array([80,43,1])
         self.Paddle = paddle(self.paddle_array[0],self.paddle_array[1],self.paddle_array[2])
         self.Paddle.update_paddle_onscreen(self.screen_array)
+
+        # Creating Bricks
         bricks = Bricks(self.level)
+
         (half_size,paddle_start,paddle_end) = self.return_paddle_start_and_end()
         temp_random = self.sys_random.choice([i for i in range(paddle_start,paddle_end)])
         self.ball_class.append(Ball(BALL_X_STARTING_CONSTANT_VELOCITY,BALL_Y_STARTING_CONSTANT_VELOCITY,42,temp_random,self.screen_array,self.level))
